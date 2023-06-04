@@ -1,0 +1,61 @@
+#+title: Magical tool for Developers
+#+author: Icy-Thought
+#+language: en
+
+* Table of Contents :TOC:
+- [[#introduction][Introduction]]
+  - [[#references][References]]
+- [[#restarting-repository-from-scratch][Restarting repository from scratch]]
+  - [[#step-1][Step 1]]
+  - [[#step-2][Step 2]]
+  - [[#step-3][Step 3]]
+
+* Introduction
+
+#+begin_quote
+Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
+
+Git is easy to learn and has a tiny footprint with lightning fast performance. It outclasses SCM tools like Subversion, CVS, Perforce, and ClearCase with features like cheap local branching, convenient staging areas, and multiple workflows.
+#+end_quote
+
+** References
+
+- [[https://git-scm.com/][Git: distributed even if your workflow isn't!]]
+
+
+* Restarting repository from scratch
+
+Before you start with this bombastic process, make sure to create 10x backups of your git directory which you intend to
+perform this madness on.
+
+** Step 1
+
+Grab the ~[remote "origin"]~ url before the disaster:
+
+#+begin_src sh
+cat .git/config
+#+end_src
+
+After ~cat~'ing the file 5x and a sprinkle of anxiety, execute /"Plan: destruction"/:
+
+#+begin_src sh
+rm -rf .git
+#+end_src
+
+** Step 2
+
+Remove the code which you ought to exclude from the rebirth of the repository and later add ~git add~ the remaining bits:
+
+#+begin_src sh
+git init
+git add .
+git commit -m "Welcome to the rebirth of this repository\!"
+#+end_src
+
+** Step 3
+
+Push the changes to our destination:
+#+begin_src sh
+git remote add origin <remote-github-url>
+git push -u --force origin main
+#+end_src
