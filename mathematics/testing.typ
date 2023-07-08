@@ -1,3 +1,5 @@
+// https://typst.app/docs/guides/guide-for-latex-users/
+
 #grid(
   columns: (1fr, 1fr),
   align(center)[
