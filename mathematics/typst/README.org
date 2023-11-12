@@ -1,0 +1,80 @@
+#+title: Typst - A LaTeX Alternative
+#+author: Icy-Thought
+#+language: en
+
+* Table of Contents :TOC:
+- [[#introduction][Introduction]]
+- [[#setting-up-typst][Setting Up Typst]]
+  - [[#emacs][Emacs]]
+    - [[#requirements][Requirements]]
+    - [[#installation][Installation]]
+
+* Introduction
+
+* Setting Up Typst
+
+** Emacs
+
+*REFERENCE*:
+- https://git.sr.ht/~meow_king/typst-ts-mode
+
+*** Requirements
+
+- Emacs >= 29 (For TreeSitter support)
+- Typst >= 0.9
+- [[https://github.com/uben0/tree-sitter-typst][Typst TS parser]]
+
+**** NixOS
+
+I packaged the Typst TS parser to NixOS/nixpkgs and other maintainers helped make it work for Darwin users too. Therefore the process should be as simple as adding the following lines to your Nix config:
+
+#+begin_src nix
+programs.emacs = { # Home-Manager option
+  enable = true;
+  extraPackages = epkgs: with epkgs; [
+    treesit-grammars.with-all-grammars;
+  ];
+};
+#+end_src
+
+**** Other Distributions & OS 
+
+The process should be similar to the once listed in the reference page. For quicker access I have chosen to add the steps in this README, therefore the credits belongs to [[https://github.com/Ziqi-Yang/][Ziqi Yang]] for writing them.
+
+#+begin_src bash
+git clone --depth=1 --single-branch -b master git@github.com:uben0/tree-sitter-typst.git
+
+cd tree-sitter-typst/src
+cc -fPIC -c -I. parser.c
+
+# Compile scanner.c.
+if test -f scanner.c
+then
+    cc -fPIC -c -I. scanner.c
+fi
+
+# Compile scanner.cc.
+if test -f scanner.cc
+then
+    c++ -fPIC -I. -c scanner.cc
+fi
+
+# Link.
+if test -f scanner.cc
+then
+    c++ -fPIC -shared *.o -o "libtree-sitter-typst.so"
+else
+    cc -fPIC -shared *.o -o "libtree-sitter-typst.so"
+fi
+#+end_src
+
+Afterwards, place the ~.so~ | ~.dylib~ | ~.dll~ in the appropriate directory. It should be located in ~C-h v treesit-extra-load-path~ (~C-h v~ = help variable) or in the user-specified tree-sitter directory.
+
+*** Installation
+
+#+begin_src emacs-lisp
+(use-package typst-ts-mode
+  :elpaca (:type git :host sourcehut :repo "meow_king/typst-ts-mode") # elpaca == package manager
+  :mode ("\\.typ\\'" . typst-ts-mode)
+  :custom (typst-ts-mode-watch-options "--open"))
+#+end_src
